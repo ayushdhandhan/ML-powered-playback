@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { User, LogOut } from 'lucide-react';
+import { User, LogOut, Music } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
 import { supabase } from '../utils/supabase';
@@ -17,10 +17,13 @@ export default function Navbar() {
 
   return (
     <header className="h-20 w-full flex items-center justify-between px-6 md:px-10 border-b border-slate-800/50 bg-slate-900/20 backdrop-blur-md">
-      <div className="flex-1">
-        {/* Placeholder for future search/greeting */}
-        <h2 className="text-xl font-medium tracking-wide">
-          {user ? `Welcome back, ${user.email?.split('@')[0] || 'User'}` : 'Welcome to Adaptive Player'}
+      <div className="flex-1 flex items-center gap-3">
+        <Music size={32} className="text-purple-400" />
+        <h2 
+          className="text-3xl md:text-4xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400"
+          style={{ fontFamily: "'Bauhaus 93', impact, sans-serif" }}
+        >
+          Music Reco
         </h2>
       </div>
 
