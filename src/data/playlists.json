@@ -1,0 +1,62 @@
+[
+  {
+    "mood": "Happy",
+    "playlistId": "PLx0sYbCqOb8TKteL5l8g3iK8lH1M7T05R",
+    "name": "Pop Happy Hits",
+    "description": "Upbeat, positive vibes to keep a smile on your face.",
+    "energy": 0.85,
+    "valence": 0.90,
+    "danceability": 0.75,
+    "tempo": 120
+  },
+  {
+    "mood": "Sad",
+    "playlistId": "PLx0sYbCqOb8QiAEYZcQ-qXQzI1iF3n9b4",
+    "name": "Sad Songs",
+    "description": "Slow, emotional tracks for when you need a good cry.",
+    "energy": 0.30,
+    "valence": 0.20,
+    "danceability": 0.40,
+    "tempo": 80
+  },
+  {
+    "mood": "Energetic",
+    "playlistId": "PLx0sYbCqOb8SqV1fWb-xVnC1vY1Pj-Wq-",
+    "name": "Workout Mix",
+    "description": "High energy tracks to get your pulse racing.",
+    "energy": 0.95,
+    "valence": 0.60,
+    "danceability": 0.80,
+    "tempo": 130
+  },
+  {
+    "mood": "Chill",
+    "playlistId": "PLx0sYbCqOb8QnEQ3S9n-x4wJ0I3d7H33Z",
+    "name": "Chill Vibes",
+    "description": "Relaxing, low-key tunes to wind down.",
+    "energy": 0.35,
+    "valence": 0.50,
+    "danceability": 0.55,
+    "tempo": 90
+  },
+  {
+    "mood": "Focus",
+    "playlistId": "PLx0sYbCqOb8TzZ3jU41Kj40x-LwqV5R4_",
+    "name": "Lo-Fi Study",
+    "description": "Instrumental beats to help you concentrate.",
+    "energy": 0.40,
+    "valence": 0.40,
+    "danceability": 0.60,
+    "tempo": 85
+  },
+  {
+    "mood": "Party",
+    "playlistId": "PLx0sYbCqOb8S_cgAMXlW2R1Gofm6XWp2f",
+    "name": "Party Hits",
+    "description": "The best dance tracks to get the party started.",
+    "energy": 0.90,
+    "valence": 0.80,
+    "danceability": 0.90,
+    "tempo": 125
+  }
+]
