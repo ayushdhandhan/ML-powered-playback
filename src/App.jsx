@@ -12,7 +12,16 @@ import Signup from './pages/Signup';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAppContext();
+  const { user, loadingApp } = useAppContext();
+  
+  if (loadingApp) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-slate-950">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
+      </div>
+    );
+  }
+  
   if (!user) return <Navigate to="/login" replace />;
   return children;
 };

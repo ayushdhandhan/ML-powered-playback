@@ -3,11 +3,14 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { User, LogOut } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
+import { supabase } from '../utils/supabase';
+
 export default function Navbar() {
   const { user, setUser } = useAppContext();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     navigate('/login');
   };
@@ -17,7 +20,7 @@ export default function Navbar() {
       <div className="flex-1">
         {/* Placeholder for future search/greeting */}
         <h2 className="text-xl font-medium tracking-wide">
-          {user ? `Welcome back, ${user.name}` : 'Welcome to Adaptive Player'}
+          {user ? `Welcome back, ${user.email?.split('@')[0] || 'User'}` : 'Welcome to Adaptive Player'}
         </h2>
       </div>
 
