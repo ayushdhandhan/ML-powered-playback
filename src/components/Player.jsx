@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Video, VideoOff, Play, Pause, SkipBack, SkipForward, Volume2, Repeat } from 'lucide-react';
+import { Video, VideoOff, Play, Pause, SkipBack, SkipForward, Volume2, Repeat, Heart } from 'lucide-react';
 
 let globalPlayer = null;
 
@@ -13,11 +13,24 @@ export default function Player({ playlist, autoplay }) {
   const [currentTime, setCurrentTime] = useState('0:00');
   const [duration, setDuration] = useState('0:00');
   const [currentVideoId, setCurrentVideoId] = useState(playlist?.firstVideoId || '');
+  const [currentVideoTitle, setCurrentVideoTitle] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
+  const [favorites, setFavorites] = useState([]);
   
   const playerContainerRef = useRef(null);
   const pollingRef = useRef(null);
   const playerRef = useRef(null);
+
+  // Load favorites from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('playerFavorites');
+    if (saved) setFavorites(JSON.parse(saved));
+  }, []);
+
+  // Save favorites to localStorage
+  useEffect(() => {
+    localStorage.setItem('playerFavorites', JSON.stringify(favorites));
+  }, [favorites]);
 
   // Load and initialize YouTube API
   useEffect(() => {
@@ -100,6 +113,7 @@ export default function Player({ playlist, autoplay }) {
       const videoData = event.target.getVideoData();
       if (videoData?.video_id) {
         setCurrentVideoId(videoData.video_id);
+        setCurrentVideoTitle(videoData.title || 'Now Playing');
       }
     } catch (e) {
       console.warn('Could not get video data');
@@ -180,6 +194,22 @@ export default function Player({ playlist, autoplay }) {
     }
   };
 
+  const toggleFavorite = () => {
+    const videoKey = `${currentVideoId}-${currentVideoTitle}`;
+    setFavorites(prev => {
+      if (prev.includes(videoKey)) {
+        return prev.filter(v => v !== videoKey);
+      } else {
+        return [...prev, videoKey];
+      }
+    });
+  };
+
+  const isFavorited = () => {
+    const videoKey = `${currentVideoId}-${currentVideoTitle}`;
+    return favorites.includes(videoKey);
+  };
+
   if (!playlist) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-white border border-slate-200 shadow-sm rounded-3xl">
@@ -251,7 +281,20 @@ export default function Player({ playlist, autoplay }) {
             </div>
 
             {/* Song Info */}
-            <h3 className="text-2xl font-bold text-white text-center mb-2">{playlist.name}</h3>
+            <div className="relative flex items-center justify-center mb-2 w-full">
+              <h3 className="text-2xl font-bold text-white text-center">{currentVideoTitle || playlist.name}</h3>
+              {currentVideoTitle && (
+                <button
+                  onClick={toggleFavorite}
+                  className="absolute right-0 p-2 hover:scale-110 transition-transform"
+                >
+                  <Heart
+                    size={24}
+                    className={isFavorited() ? 'fill-red-500 text-red-500' : 'text-white/50'}
+                  />
+                </button>
+              )}
+            </div>
             <p className="text-slate-400 text-center mb-8">{playlist.description}</p>
 
             {/* Progress Bar */}
