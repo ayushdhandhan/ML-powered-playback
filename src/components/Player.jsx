@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Video, VideoOff, Play, Pause, SkipBack, SkipForward, Volume2, Repeat } from 'lucide-react';
+
+let globalPlayer = null;
 
 export default function Player({ playlist, autoplay }) {
   const [showVideo, setShowVideo] = useState(false);
@@ -9,50 +11,152 @@ export default function Player({ playlist, autoplay }) {
   const [volume, setVolume] = useState(70);
   const [repeatMode, setRepeatMode] = useState(0);
   const [currentTime, setCurrentTime] = useState('0:00');
-  const [duration, setDuration] = useState('3:30');
+  const [duration, setDuration] = useState('0:00');
+  const [currentVideoId, setCurrentVideoId] = useState(playlist?.firstVideoId || '');
+  const [thumbnailUrl, setThumbnailUrl] = useState('');
+  
+  const playerContainerRef = useRef(null);
+  const pollingRef = useRef(null);
+  const playerRef = useRef(null);
 
-  // Simulate playback when video is off
+  // Load and initialize YouTube API
   useEffect(() => {
-    if (!isPlaying || showVideo) return;
-    
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          if (repeatMode === 2) {
-            return 0; // Repeat current song
-          } else if (repeatMode === 1) {
-            setProgress(0);
-            return 0; // Repeat all
-          }
-          setIsPlaying(false);
-          return 100;
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      
+      window.onYouTubeIframeAPIReady = initPlayer;
+    } else if (!playerRef.current && playerContainerRef.current) {
+      initPlayer();
+    }
+
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, []);
+
+  // Update thumbnail when video changes
+  useEffect(() => {
+    if (currentVideoId) {
+      setThumbnailUrl(`https://img.youtube.com/vi/${currentVideoId}/maxresdefault.jpg`);
+    }
+  }, [currentVideoId]);
+
+  const initPlayer = () => {
+    if (!playerRef.current && playerContainerRef.current && window.YT) {
+      playerRef.current = new window.YT.Player(playerContainerRef.current, {
+        videoId: '',
+        width: '100%',
+        height: '100%',
+        playerVars: {
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          rel: 0,
+          playsinline: 1,
+        },
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange,
+          onError: onPlayerError,
         }
-        return prev + 0.5;
       });
-    }, 100);
-    
-    return () => clearInterval(interval);
-  }, [isPlaying, showVideo, repeatMode]);
+      globalPlayer = playerRef.current;
+    }
+  };
 
-  // Update time display
-  useEffect(() => {
-    const totalSeconds = 210; // 3:30
-    const currentSeconds = (progress / 100) * totalSeconds;
-    const mins = Math.floor(currentSeconds / 60);
-    const secs = Math.floor(currentSeconds % 60);
-    setCurrentTime(`${mins}:${secs.toString().padStart(2, '0')}`);
-  }, [progress]);
+  const onPlayerReady = (event) => {
+    if (playlist?.playlistId && autoplay) {
+      event.target.loadPlaylist({
+        list: playlist.playlistId,
+        listType: 'playlist',
+        index: 0,
+      });
+      event.target.setVolume(volume);
+    }
+  };
+
+  const onPlayerStateChange = (event) => {
+    const YT = window.YT;
+    
+    if (event.data === YT.PlayerState.PLAYING) {
+      setIsPlaying(true);
+      startPolling();
+    } else if (event.data === YT.PlayerState.PAUSED) {
+      setIsPlaying(false);
+      stopPolling();
+    } else if (event.data === YT.PlayerState.ENDED) {
+      setIsPlaying(false);
+      stopPolling();
+      if (repeatMode === 2) {
+        event.target.playVideo();
+      }
+    }
+
+    // Update thumbnail when video changes
+    try {
+      const videoData = event.target.getVideoData();
+      if (videoData?.video_id) {
+        setCurrentVideoId(videoData.video_id);
+      }
+    } catch (e) {
+      console.warn('Could not get video data');
+    }
+  };
+
+  const onPlayerError = (event) => {
+    console.warn('YouTube player error:', event.data);
+  };
+
+  const startPolling = () => {
+    if (pollingRef.current) clearInterval(pollingRef.current);
+    pollingRef.current = setInterval(() => {
+      if (playerRef.current && playerRef.current.getCurrentTime) {
+        try {
+          const current = playerRef.current.getCurrentTime();
+          const dur = playerRef.current.getDuration();
+          if (dur > 0) {
+            setProgress((current / dur) * 100);
+            setCurrentTime(formatTime(current));
+            setDuration(formatTime(dur));
+          }
+        } catch (e) {
+          // Silently handle polling errors
+        }
+      }
+    }, 500);
+  };
+
+  const stopPolling = () => {
+    if (pollingRef.current) clearInterval(pollingRef.current);
+  };
+
+  const formatTime = (seconds) => {
+    if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    if (!playerRef.current) return;
+    if (isPlaying) {
+      playerRef.current.pauseVideo();
+    } else {
+      playerRef.current.playVideo();
+    }
   };
 
   const handleSkipForward = () => {
-    setProgress(prev => Math.min(prev + 20, 100));
+    if (!playerRef.current?.nextVideo) return;
+    playerRef.current.nextVideo();
   };
 
   const handleSkipBack = () => {
-    setProgress(prev => Math.max(prev - 10, 0));
+    if (!playerRef.current?.previousVideo) return;
+    playerRef.current.previousVideo();
   };
 
   const handleRepeat = () => {
@@ -60,13 +164,20 @@ export default function Player({ playlist, autoplay }) {
   };
 
   const handleProgressChange = (e) => {
+    if (!playerRef.current?.seekTo || !playerRef.current?.getDuration) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const percent = ((e.clientX - rect.left) / rect.width) * 100;
-    setProgress(Math.max(0, Math.min(100, percent)));
+    const duration = playerRef.current.getDuration();
+    const seekTime = (percent / 100) * duration;
+    playerRef.current.seekTo(seekTime, true);
   };
 
   const handleVolumeChange = (e) => {
-    setVolume(Number(e.target.value));
+    const newVolume = Number(e.target.value);
+    setVolume(newVolume);
+    if (playerRef.current?.setVolume) {
+      playerRef.current.setVolume(newVolume);
+    }
   };
 
   if (!playlist) {
@@ -78,7 +189,6 @@ export default function Player({ playlist, autoplay }) {
   }
 
   const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlist.playlistId}${autoplay ? '&autoplay=1' : ''}`;
-  const thumbnailUrl = `https://img.youtube.com/vi/${playlist.firstVideoId}/maxresdefault.jpg`;
 
   return (
     <motion.div 
@@ -86,6 +196,8 @@ export default function Player({ playlist, autoplay }) {
       animate={{ opacity: 1, scale: 1 }}
       className="w-full bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-lg"
     >
+      {/* Hidden YouTube Player Container - Always controls the actual playback */}
+      <div style={{ display: 'none' }} ref={playerContainerRef} id="youtube-player"></div>
       {/* Video Toggle Button */}
       <div className="flex items-center justify-between px-6 md:px-8 py-4 bg-gradient-to-r from-slate-50 to-white border-b border-slate-100">
         <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider">Playlist Stream</h3>
@@ -126,12 +238,15 @@ export default function Player({ playlist, autoplay }) {
         {/* Audio Player UI - Show when video is OFF */}
         {!showVideo && (
           <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 flex flex-col items-center justify-center px-6 py-12">
-            {/* Album Art - YouTube Video Thumbnail */}
+            {/* Album Art - Current Video Thumbnail */}
             <div className="mb-8 w-48 h-48 rounded-3xl shadow-2xl overflow-hidden border-4 border-slate-700">
               <img 
-                src={thumbnailUrl}
+                src={thumbnailUrl || `https://img.youtube.com/vi/${currentVideoId}/maxresdefault.jpg`}
                 alt={playlist.name}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = `https://img.youtube.com/vi/${currentVideoId}/hqdefault.jpg`;
+                }}
               />
             </div>
 
@@ -176,7 +291,7 @@ export default function Player({ playlist, autoplay }) {
               <button 
                 onClick={handleSkipBack}
                 className="text-slate-400 hover:text-white transition-all hover:scale-110 active:scale-95"
-                title="Skip back 10 seconds"
+                title="Previous video"
               >
                 <SkipBack size={26} />
               </button>
@@ -194,7 +309,7 @@ export default function Player({ playlist, autoplay }) {
               <button 
                 onClick={handleSkipForward}
                 className="text-slate-400 hover:text-white transition-all hover:scale-110 active:scale-95"
-                title="Skip forward 15 seconds"
+                title="Next video"
               >
                 <SkipForward size={26} />
               </button>
