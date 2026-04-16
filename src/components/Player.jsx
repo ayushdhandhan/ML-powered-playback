@@ -57,7 +57,7 @@ export default function Player({ playlist, autoplay }) {
           ></iframe>
         </div>
       ) : (
-        <div className="w-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center" style={{ paddingBottom: '56.25%' }}>
+        <div className="relative w-full bg-gradient-to-br from-slate-800 to-slate-900" style={{ paddingBottom: '56.25%' }}>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
             <VideoOff size={48} className="mb-4 opacity-50" />
             <p className="text-slate-400 font-medium">Video playback disabled</p>
