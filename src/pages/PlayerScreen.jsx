@@ -23,7 +23,7 @@ export default function PlayerScreen() {
   }, [searchParams, contextPlaylist]);
 
   return (
-    <div className="max-w-6xl mx-auto py-8">
+    <div className="max-w-6xl mx-auto py-4 md:py-8 px-4 md:px-6">
       <button 
         onClick={() => navigate(-1)}
         className="mb-8 flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors group"
