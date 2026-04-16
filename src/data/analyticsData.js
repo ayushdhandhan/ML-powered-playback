@@ -16,12 +16,12 @@ export const analyticsData = {
     { day: 'Sun', hours: 3.1 }
   ],
   moodTimeline: [
-    { month: 'Jan', Happy: 40, Chill: 24, Focus: 24 },
-    { month: 'Feb', Happy: 30, Chill: 13, Focus: 22 },
-    { month: 'Mar', Happy: 20, Chill: 58, Focus: 29 },
-    { month: 'Apr', Happy: 27, Chill: 39, Focus: 20 },
-    { month: 'May', Happy: 18, Chill: 48, Focus: 21 },
-    { month: 'Jun', Happy: 23, Chill: 38, Focus: 25 },
+    { date: 'Apr 2', Happy: 40, Chill: 24, Focus: 24 },
+    { date: 'Apr 5', Happy: 30, Chill: 13, Focus: 22 },
+    { date: 'Apr 8', Happy: 20, Chill: 58, Focus: 29 },
+    { date: 'Apr 11', Happy: 27, Chill: 39, Focus: 20 },
+    { date: 'Apr 14', Happy: 18, Chill: 48, Focus: 21 },
+    { date: 'Apr 16', Happy: 23, Chill: 38, Focus: 25 },
   ],
   recentHistory: [
     { id: 1, mood: 'Focus', time: '10 mins ago', name: 'Lo-Fi Study' },
