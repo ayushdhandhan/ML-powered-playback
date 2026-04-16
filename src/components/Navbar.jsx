@@ -36,7 +36,7 @@ export default function Navbar() {
           className="text-3xl md:text-4xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600"
           style={{ fontFamily: "'Bauhaus 93', impact, sans-serif" }}
         >
-          Music Reco
+          Adaptive Listening Engine
         </h2>
       </div>
 

@@ -10,7 +10,8 @@ export default function Player({ playlist, autoplay }) {
     );
   }
 
-  const embedUrl = `https://www.youtube.com/embed?listType=playlist&list=${playlist.playlistId}${autoplay ? '&autoplay=1' : ''}`;
+  // Use videoseries format for YouTube playlist embed (official format)
+  const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlist.playlistId}${autoplay ? '&autoplay=1' : ''}`;
 
   return (
     <motion.div 
@@ -22,7 +23,7 @@ export default function Player({ playlist, autoplay }) {
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
         <iframe
           src={embedUrl}
-          title="YouTube video player"
+          title="YouTube Playlist Player"
           className="absolute top-0 left-0 w-full h-full border-0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -34,17 +35,18 @@ export default function Player({ playlist, autoplay }) {
            {playlist.name}
          </h2>
          <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-slate-200 shadow-sm">
-           <span className="text-xs font-semibold text-slate-500 tracking-wider">MOOD MATCH:</span>
+           <span className="text-xs font-semibold text-slate-500 tracking-wider">MOOD-ENERGY MATCH:</span>
            <span className="text-sm font-bold text-teal-700 uppercase">{playlist.mood}</span>
          </div>
          {playlist.reason && (
            <p className="mt-4 text-slate-600 leading-relaxed max-w-3xl bg-white p-4 rounded-xl border border-teal-100">
              <span className="info-icon mr-2">🧠</span> 
-             <span className="font-semibold text-teal-800">Ai Recommendation Engine: </span>
-             {playlist.reason}
+             <span className="font-semibold text-teal-800">Adaptive Recommendation Engine:</span>
+             <br/>
+             <span className="text-sm mt-2 block">{playlist.reason}</span>
              <br />
              <span className="text-xs text-slate-400 mt-2 block font-medium">
-                Features analyzing: Energy: {playlist.energy} | Valence: {playlist.valence} | Tempo: {playlist.tempo}
+                Acoustic Features: Energy {(playlist.energy * 100).toFixed(0)}% | Valence {(playlist.valence * 100).toFixed(0)}% | Tempo {playlist.tempo} BPM
              </span>
            </p>
          )}

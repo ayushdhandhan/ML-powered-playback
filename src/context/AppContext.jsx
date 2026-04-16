@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
+import { trackUserInteraction } from '../utils/tracking';
 
 const AppContext = createContext();
 
@@ -135,12 +136,8 @@ export function AppProvider({ children }) {
       // Update historical frequency mapping
       await supabase.from('profiles').update({ mood_history: newHistory }).eq('id', user.id);
       
-      // Store real-time timestamped interaction 
-      await supabase.from('interactions').insert({
-        user_id: user.id,
-        selected_mood: moodName,
-        timestamp: new Date().toISOString()
-      });
+      // Track real-time interaction to user_interactions table
+      await trackUserInteraction(user.id, moodName);
     }
   };
 
