@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Video, VideoOff, Play, Pause, SkipBack, SkipForward, Volume2, Repeat, Heart } from 'lucide-react';
+import { AppContext } from '../context/AppContext';
+import { supabase } from '../utils/supabase';
 
 let globalPlayer = null;
 
 export default function Player({ playlist, autoplay }) {
+  const { user } = useContext(AppContext);
   const [showVideo, setShowVideo] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -21,16 +24,28 @@ export default function Player({ playlist, autoplay }) {
   const pollingRef = useRef(null);
   const playerRef = useRef(null);
 
-  // Load favorites from localStorage
+  // Load favorites from Supabase
   useEffect(() => {
-    const saved = localStorage.getItem('playerFavorites');
-    if (saved) setFavorites(JSON.parse(saved));
-  }, []);
-
-  // Save favorites to localStorage
-  useEffect(() => {
-    localStorage.setItem('playerFavorites', JSON.stringify(favorites));
-  }, [favorites]);
+    if (!user?.id) return;
+    
+    const loadFavorites = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('*')
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+        if (data) {
+          setFavorites(data.map(fav => `${fav.video_id}-${fav.video_title}`));
+        }
+      } catch (err) {
+        console.warn('Error loading favorites:', err);
+      }
+    };
+    
+    loadFavorites();
+  }, [user?.id]);
 
   // Load and initialize YouTube API
   useEffect(() => {
@@ -194,15 +209,46 @@ export default function Player({ playlist, autoplay }) {
     }
   };
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
+    if (!user?.id) {
+      alert('Please log in to save favorites');
+      return;
+    }
+
     const videoKey = `${currentVideoId}-${currentVideoTitle}`;
-    setFavorites(prev => {
-      if (prev.includes(videoKey)) {
-        return prev.filter(v => v !== videoKey);
+    const isCurrentlyFavorited = favorites.includes(videoKey);
+
+    try {
+      if (isCurrentlyFavorited) {
+        // Remove from favorites
+        const { error } = await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('video_id', currentVideoId)
+          .eq('video_title', currentVideoTitle);
+        
+        if (error) throw error;
+        setFavorites(prev => prev.filter(v => v !== videoKey));
       } else {
-        return [...prev, videoKey];
+        // Add to favorites
+        const { error } = await supabase
+          .from('favorites')
+          .insert({
+            user_id: user.id,
+            video_id: currentVideoId,
+            video_title: currentVideoTitle,
+            playlist_id: playlist.playlistId,
+            thumbnail_url: thumbnailUrl,
+          });
+        
+        if (error) throw error;
+        setFavorites(prev => [...prev, videoKey]);
       }
-    });
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+      alert('Failed to save favorite');
+    }
   };
 
   const isFavorited = () => {
