@@ -37,7 +37,12 @@ export default function Player({ playlist, autoplay }) {
         
         if (error) throw error;
         if (data) {
-          setFavorites(data.map(fav => `${fav.video_id}-${fav.video_title}`));
+          // Only include song favorites (those with video_id)
+          const songFavs = data
+            .filter(fav => fav.video_id && fav.video_id.trim() !== '')
+            .map(fav => `${fav.video_id}-${fav.video_title}`);
+          console.log('Loaded song favorites:', songFavs);
+          setFavorites(songFavs);
         }
       } catch (err) {
         console.warn('Error loading favorites:', err);
@@ -215,8 +220,16 @@ export default function Player({ playlist, autoplay }) {
       return;
     }
 
+    if (!currentVideoId || !currentVideoTitle) {
+      alert('Video information not loaded yet. Please wait a moment and try again.');
+      console.warn('Missing video info:', { currentVideoId, currentVideoTitle });
+      return;
+    }
+
     const videoKey = `${currentVideoId}-${currentVideoTitle}`;
     const isCurrentlyFavorited = favorites.includes(videoKey);
+
+    console.log('Toggling favorite:', { videoKey, isCurrentlyFavorited, currentVideoId, currentVideoTitle, userId: user.id });
 
     try {
       if (isCurrentlyFavorited) {
@@ -229,9 +242,18 @@ export default function Player({ playlist, autoplay }) {
           .eq('video_title', currentVideoTitle);
         
         if (error) throw error;
+        console.log('Removed from favorites');
         setFavorites(prev => prev.filter(v => v !== videoKey));
       } else {
         // Add to favorites
+        console.log('Inserting favorite with:', {
+          user_id: user.id,
+          video_id: currentVideoId,
+          video_title: currentVideoTitle,
+          playlist_id: playlist.playlistId,
+          thumbnail_url: thumbnailUrl,
+        });
+
         const { error } = await supabase
           .from('favorites')
           .insert({
@@ -243,11 +265,12 @@ export default function Player({ playlist, autoplay }) {
           });
         
         if (error) throw error;
+        console.log('Added to favorites');
         setFavorites(prev => [...prev, videoKey]);
       }
     } catch (err) {
       console.error('Error toggling favorite:', err);
-      alert('Failed to save favorite');
+      alert('Failed to save favorite: ' + err.message);
     }
   };
 

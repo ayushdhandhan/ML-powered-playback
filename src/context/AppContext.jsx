@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
 import { trackUserInteraction } from '../utils/tracking';
 
-const AppContext = createContext();
+export const AppContext = createContext();
 
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null);

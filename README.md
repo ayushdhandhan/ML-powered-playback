@@ -1,16 +1,29 @@
-# React + Vite
+# Adaptive Music Player
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A feature-rich, professional music recommendation system built with React, Vite, and Supabase.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Adaptive Mood Tracking**: Analyzes user mood selections and recommends music tailored to current emotional states.
+- **Real-Time Interaction Tracking**: Captures user interactions using a Supabase backend to improve personalized recommendations.
+- **Favorites Library**: Persistent storage for favorite songs and playlists.
+- **Rule-Based Recommendation Engine**: Algorithmically curates music choices based on historical listening preferences.
+- **Responsive UI**: A polished, motion-rich interface built with Tailwind CSS and Framer Motion.
+- **Authentication**: Seamless user login and profile management via Supabase Auth.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React, Vite, Tailwind CSS, Framer Motion
+- **Backend & Database**: Supabase (PostgreSQL, Auth)
+- **Deployment**: Vercel ready
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Copy `.env.local.example` to `.env.local` and add your Supabase credentials.
+2. Run database migrations using the provided `supabase_schema.sql`.
+3. Install dependencies: `npm install`
+4. Start the development server: `npm run dev`
+
+## Building for Production
+
+Run `npm run build` to create an optimized production build.

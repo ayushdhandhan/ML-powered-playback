@@ -18,16 +18,19 @@ export default function Favorites() {
 
     const fetchSongFavorites = async () => {
       try {
+        // Fetch all favorites for this user
         const { data, error } = await supabase
           .from('favorites')
           .select('*')
           .eq('user_id', user.id)
-          .not('video_id', 'is', null) // Get records with video_id (individual songs)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
         if (data) {
-          setSongFavorites(data);
+          // Filter for songs (those with video_id)
+          const songs = data.filter(fav => fav.video_id && fav.video_id.trim() !== '');
+          console.log('Fetched song favorites:', songs); // Debug log
+          setSongFavorites(songs);
         }
       } catch (err) {
         console.error('Error fetching song favorites:', err);
@@ -47,6 +50,7 @@ export default function Favorites() {
         table: 'favorites',
         filter: `user_id=eq.${user.id}`,
       }, (payload) => {
+        console.log('Favorites changed:', payload); // Debug log
         // Re-fetch when changes occur
         fetchSongFavorites();
       })
