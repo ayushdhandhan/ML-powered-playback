@@ -386,7 +386,7 @@ export default function Player({ playlist, autoplay }) {
             </div>
 
             {/* Playback Controls */}
-            <div className="flex items-center justify-center gap-6 mb-8">
+            <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mb-8 w-full mt-2">
               <button 
                 onClick={handleRepeat}
                 className={`transition-all hover:scale-110 ${
@@ -437,7 +437,7 @@ export default function Player({ playlist, autoplay }) {
             </div>
 
             {/* Volume Slider */}
-            <div className="w-full max-w-xs mb-6">
+            <div className="w-full max-w-xs mb-6 px-4">
               <div className="flex items-center gap-3">
                 <Volume2 size={16} className="text-slate-400" />
                 <input 
@@ -454,7 +454,7 @@ export default function Player({ playlist, autoplay }) {
             </div>
 
             {/* Mood Badge */}
-            <div className="mt-4 px-4 py-2 rounded-full bg-slate-700/50 border border-slate-600">
+            <div className="mt-4 mb-2 px-4 py-2 rounded-full bg-slate-700/50 border border-slate-600">
               <p className="text-xs text-slate-300 tracking-wider">MOOD-ENERGY MATCH: <span className="font-bold text-teal-400">{playlist.mood.toUpperCase()}</span></p>
             </div>
           </div>

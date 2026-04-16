@@ -70,7 +70,11 @@ export function AppProvider({ children }) {
 
         if (favs) {
           // Format it to match our frontend expectation (extract playlist_data)
-          setFavorites(favs.map(f => f.playlist_data));
+          // Filter out rows where playlist_data is null (i.e. individual song favorites)
+          const validPlaylists = favs
+            .map(f => f.playlist_data)
+            .filter(data => data != null);
+          setFavorites(validPlaylists);
         }
 
       } catch (err) {

@@ -67,9 +67,9 @@ export default function Analytics() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-teal-50 rounded-2xl text-teal-600">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-10">
+        <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
+          <div className="p-3 md:p-4 bg-teal-50 rounded-2xl text-teal-600">
             <Clock size={28} />
           </div>
           <div>
@@ -77,8 +77,8 @@ export default function Analytics() {
             <h3 className="text-2xl font-bold text-slate-800">{analyticsData.totalHours} hrs</h3>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-blue-50 rounded-2xl text-blue-600">
+        <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
+          <div className="p-3 md:p-4 bg-blue-50 rounded-2xl text-blue-600">
             <Activity size={28} />
           </div>
           <div>
@@ -86,8 +86,8 @@ export default function Analytics() {
              <h3 className="text-2xl font-bold text-slate-800">{history.length} Plays</h3>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-purple-50 rounded-2xl text-purple-600">
+        <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
+          <div className="p-3 md:p-4 bg-purple-50 rounded-2xl text-purple-600">
             <Disc size={28} />
           </div>
           <div>
@@ -95,8 +95,8 @@ export default function Analytics() {
              <h3 className="text-2xl font-bold text-slate-800">{Object.keys(moodStats).length || 3}</h3>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-pink-50 rounded-2xl text-pink-600">
+        <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
+          <div className="p-3 md:p-4 bg-pink-50 rounded-2xl text-pink-600">
             <LineChartIcon size={28} />
           </div>
           <div>
@@ -106,10 +106,10 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 mb-6 md:mb-8">
         
         {/* Mood Trend Over Time */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div className="lg:col-span-2 bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm w-full overflow-hidden">
           <div className="flex items-center gap-2 mb-6">
             <LineChartIcon className="text-teal-600" />
             <div>
@@ -147,7 +147,7 @@ export default function Analytics() {
         </div>
 
         {/* Genre Distribution */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col">
+        <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col w-full overflow-hidden">
           <div className="flex items-center gap-2 mb-2">
             <Disc className="text-blue-600" />
             <div>
@@ -181,10 +181,10 @@ export default function Analytics() {
 
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 mb-8">
         
         {/* Listening Hours per Genre */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm w-full overflow-hidden">
           <h2 className="text-lg font-bold text-slate-800 mb-2">Weekly Engagement Metrics</h2>
           <p className="text-xs text-slate-500 mb-4">Hourly consumption patterns</p>
           <div className="h-64">
@@ -201,7 +201,7 @@ export default function Analytics() {
         </div>
 
         {/* Unified Listening History */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm w-full overflow-hidden">
           <h2 className="text-lg font-bold text-slate-800 mb-6">Listening History (Hybrid)</h2>
           <div className="space-y-4">
             {history.slice(0, 5).map((item) => (
