@@ -2,6 +2,7 @@
   {
     "mood": "Happy",
     "playlistId": "PLplXQ2cg9B_qrNvF8KaDew3EetUqO8jBo",
+    "firstVideoId": "dQw4w9WgXcQ",
     "name": "Pop Happy Hits",
     "description": "Upbeat, positive vibes to keep a smile on your face.",
     "thumbnail": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop",
@@ -13,6 +14,7 @@
   {
     "mood": "Sad",
     "playlistId": "PLHuHXHyLu7BGi-vR7X6j_xh_Tt9wy7pNA",
+    "firstVideoId": "9D-QcZguLwQ",
     "name": "Sad Songs",
     "description": "Slow, emotional tracks for when you need a good cry.",
     "thumbnail": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&h=500&fit=crop",
@@ -24,6 +26,7 @@
   {
     "mood": "Energetic",
     "playlistId": "PLPy7ysRHCJGNyMOEpWBg672RLheefhSHy",
+    "firstVideoId": "ZXsQAXx_ao0",
     "name": "Workout Mix",
     "description": "High energy tracks to get your pulse racing.",
     "thumbnail": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&h=500&fit=crop",
@@ -35,6 +38,7 @@
   {
     "mood": "Chill",
     "playlistId": "PLUw7Nsql2TwQrUwKitNw4OIoxYAzEWczn",
+    "firstVideoId": "5qap5aO4i9A",
     "name": "Chill Vibes",
     "description": "Relaxing, low-key tunes to wind down.",
     "thumbnail": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&h=500&fit=crop",
@@ -46,6 +50,7 @@
   {
     "mood": "Focus",
     "playlistId": "PL4quxJYkAWAGeH8otN7kPOn2sVFduakdM",
+    "firstVideoId": "jfKfPfyJRdk",
     "name": "Lo-Fi Study",
     "description": "Instrumental beats to help you concentrate.",
     "thumbnail": "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=500&h=500&fit=crop",
@@ -57,6 +62,7 @@
   {
     "mood": "Party",
     "playlistId": "PLo3pNg0eiPc-3MC9VFxy9Kt6eau9ZJTPt",
+    "firstVideoId": "kJQP7kiw9Fk",
     "name": "Party Hits",
     "description": "The best dance tracks to get the party started.",
     "thumbnail": "https://images.unsplash.com/photo-1516997121675-4f6ee676c183?w=500&h=500&fit=crop",
