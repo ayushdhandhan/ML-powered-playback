@@ -63,13 +63,3 @@ The application relies on three fundamental data domains within Supabase:
 ## 🚀 Deployment Pipeline
 - The codebase is hosted on GitHub and hooked to **Vercel** via CI/CD. 
 - Builds are minified using Vite's Rollup configuration with dynamic asset chunking. Ensure environmental variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) are injected during Vercel's build step.
-
-## 📝 Usage Flow (For Report Generation Context)
-
-1. **Onboarding:** User arrives at a dynamically generated split-screen aesthetic login page. Authentication provisions an access token stored locally.
-2. **Context Intake:** Upon navigating to the `/` root router, the `Home` component mounts. User input is consumed via the free-text search bar.
-3. **Analysis Node:** The search string is subjected to `.includes()` string parsing within `mapInputToMood()`. If a threshold matches (e.g., 'pumped' -> Energetic), state drops context into `AppContext`.
-4. **Handoff:** The router redirects to `/player?mood=[matched_mood]` where the `PlayerScreen` retrieves contextual JSON from `src/data/playlists.json`. 
-5. **Consumption & Logging:** The Iframe mounts, audio triggers, and an asynchronous call to Supabase records the behavioral interaction timestamp. 
-
-*(This README ensures a comprehensive baseline for downstream NLP engines to synthesize technical reports on MUSIC-Reco's functionality, constraints, and architecture.)*
