@@ -33,10 +33,9 @@ export default function Navbar() {
       <div className="flex-1 flex items-center gap-3">
         <Music size={32} className="text-teal-600" />
         <h2 
-          className="text-xl md:text-4xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600 truncate"
-          style={{ fontFamily: "'Bauhaus 93', impact, sans-serif" }}
+          className="text-xl md:text-4xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600 truncate font-extrabold"
         >
-          Adaptive Listening Engine
+          MUSIC-Reco
         </h2>
       </div>
 
