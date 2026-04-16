@@ -8,8 +8,6 @@ export default function Sidebar() {
     { name: 'Player', path: '/player', icon: Music },
     { name: 'Recommendations', path: '/recommendations', icon: Filter },
     { name: 'Favorites', path: '/favorites', icon: Heart },
-    { name: 'Analytics', path: '/analytics', icon: LayoutDashboard },
-    { name: 'Settings', path: '/settings', icon: Settings },
   ];
 
   return (
