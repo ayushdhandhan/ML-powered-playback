@@ -5,26 +5,13 @@ import { Video, VideoOff, Play, Pause, SkipBack, SkipForward, Volume2, Repeat } 
 export default function Player({ playlist, autoplay }) {
   const [showVideo, setShowVideo] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(30);
+  const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(70);
-  const [repeatMode, setRepeatMode] = useState(0); // 0=no repeat, 1=repeat all, 2=repeat one
-  const [currentTime, setCurrentTime] = useState('1:45');
+  const [repeatMode, setRepeatMode] = useState(0);
+  const [currentTime, setCurrentTime] = useState('0:00');
   const [duration, setDuration] = useState('3:30');
-  if (!playlist) {
-    return (
-      <div className="w-full h-96 flex items-center justify-center bg-white border border-slate-200 shadow-sm rounded-3xl">
-        <p className="text-slate-500 font-medium tracking-wide">Select a mood to get a recommendation</p>
-      </div>
-    );
-  }
 
-  // Use videoseries format for YouTube playlist embed (official format)
-  const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlist.playlistId}${autoplay ? '&autoplay=1' : ''}`;
-  
-  // YouTube thumbnail from first video
-  const thumbnailUrl = `https://img.youtube.com/vi/${playlist.firstVideoId}/maxresdefault.jpg`;
-
-  // Progress animation
+  // Simulate playback when video is off
   useEffect(() => {
     if (!isPlaying || showVideo) return;
     
@@ -34,7 +21,8 @@ export default function Player({ playlist, autoplay }) {
           if (repeatMode === 2) {
             return 0; // Repeat current song
           } else if (repeatMode === 1) {
-            return 0; // Repeat all - would skip to next in real app
+            setProgress(0);
+            return 0; // Repeat all
           }
           setIsPlaying(false);
           return 100;
@@ -45,6 +33,15 @@ export default function Player({ playlist, autoplay }) {
     
     return () => clearInterval(interval);
   }, [isPlaying, showVideo, repeatMode]);
+
+  // Update time display
+  useEffect(() => {
+    const totalSeconds = 210; // 3:30
+    const currentSeconds = (progress / 100) * totalSeconds;
+    const mins = Math.floor(currentSeconds / 60);
+    const secs = Math.floor(currentSeconds % 60);
+    setCurrentTime(`${mins}:${secs.toString().padStart(2, '0')}`);
+  }, [progress]);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -67,6 +64,21 @@ export default function Player({ playlist, autoplay }) {
     const percent = ((e.clientX - rect.left) / rect.width) * 100;
     setProgress(Math.max(0, Math.min(100, percent)));
   };
+
+  const handleVolumeChange = (e) => {
+    setVolume(Number(e.target.value));
+  };
+
+  if (!playlist) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center bg-white border border-slate-200 shadow-sm rounded-3xl">
+        <p className="text-slate-500 font-medium tracking-wide">Select a mood to get a recommendation</p>
+      </div>
+    );
+  }
+
+  const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlist.playlistId}${autoplay ? '&autoplay=1' : ''}`;
+  const thumbnailUrl = `https://img.youtube.com/vi/${playlist.firstVideoId}/maxresdefault.jpg`;
 
   return (
     <motion.div 
@@ -97,19 +109,19 @@ export default function Player({ playlist, autoplay }) {
         </button>
       </div>
 
-      {/* Aspect ratio 16:9 for YouTube - Always in DOM, hidden when video is off */}
+      {/* Aspect ratio 16:9 for YouTube */}
       <div className="relative w-full bg-slate-900" style={{ paddingBottom: '56.25%' }}>
-        {/* Hidden YouTube iframe running in background */}
-        <div style={{ display: showVideo ? 'block' : 'none', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+        {/* YouTube iframe when video is ON */}
+        {showVideo && (
           <iframe
             src={embedUrl}
             title="YouTube Playlist Player"
-            className="w-full h-full border-0"
+            className="absolute w-full h-full border-0"
             style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 50px), 0 100%)' }}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
-        </div>
+        )}
 
         {/* Audio Player UI - Show when video is OFF */}
         {!showVideo && (
@@ -133,14 +145,16 @@ export default function Player({ playlist, autoplay }) {
                 className="flex items-center gap-3 mb-2 cursor-pointer"
                 onClick={handleProgressChange}
               >
-                <span className="text-xs text-slate-400">0:45</span>
-                <div className="flex-1 h-1 bg-slate-700 rounded-full overflow-hidden hover:h-1.5 transition-all">
+                <span className="text-xs text-slate-400 font-medium">{currentTime}</span>
+                <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden hover:h-2 transition-all cursor-pointer group">
                   <div 
-                    className="h-full bg-gradient-to-r from-teal-500 to-blue-500 rounded-full transition-all"
+                    className="h-full bg-gradient-to-r from-teal-500 to-blue-500 rounded-full transition-all relative"
                     style={{ width: `${progress}%` }}
-                  ></div>
+                  >
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
                 </div>
-                <span className="text-xs text-slate-400">3:30</span>
+                <span className="text-xs text-slate-400 font-medium">{duration}</span>
               </div>
             </div>
 
@@ -148,39 +162,49 @@ export default function Player({ playlist, autoplay }) {
             <div className="flex items-center justify-center gap-6 mb-8">
               <button 
                 onClick={handleRepeat}
-                className={`transition-colors ${
+                className={`transition-all hover:scale-110 ${
                   repeatMode === 0 
-                    ? 'text-slate-400 hover:text-white' 
+                    ? 'text-slate-400' 
                     : repeatMode === 1
-                    ? 'text-teal-400 hover:text-teal-300'
-                    : 'text-blue-400 hover:text-blue-300'
+                    ? 'text-teal-400'
+                    : 'text-blue-400'
                 }`}
+                title={`Repeat: ${repeatMode === 0 ? 'Off' : repeatMode === 1 ? 'All' : 'One'}`}
               >
-                <Repeat size={20} />
-                {repeatMode === 2 && <span className="absolute text-xs -mt-6">1</span>}
+                <Repeat size={22} />
               </button>
               <button 
                 onClick={handleSkipBack}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-slate-400 hover:text-white transition-all hover:scale-110 active:scale-95"
+                title="Skip back 10 seconds"
               >
-                <SkipBack size={24} />
+                <SkipBack size={26} />
               </button>
               <button 
                 onClick={handlePlayPause}
-                className="w-16 h-16 bg-gradient-to-r from-teal-500 to-blue-600 rounded-full flex items-center justify-center text-white hover:shadow-lg transition-all transform hover:scale-105"
+                className="w-16 h-16 bg-gradient-to-r from-teal-500 to-blue-600 rounded-full flex items-center justify-center text-white hover:shadow-xl transition-all transform hover:scale-110 active:scale-95"
+                title={isPlaying ? 'Pause' : 'Play'}
               >
-                {isPlaying ? <Pause size={32} fill="white" /> : <Play size={32} fill="white" />}
+                {isPlaying ? (
+                  <Pause size={32} fill="white" />
+                ) : (
+                  <Play size={32} fill="white" className="ml-1" />
+                )}
               </button>
               <button 
                 onClick={handleSkipForward}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-slate-400 hover:text-white transition-all hover:scale-110 active:scale-95"
+                title="Skip forward 15 seconds"
               >
-                <SkipForward size={24} />
+                <SkipForward size={26} />
               </button>
-              <button className="text-slate-400 hover:text-white transition-colors relative group">
-                <Volume2 size={20} />
-                <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-slate-800 px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-xs">
-                  Volume: {volume}%
+              <button 
+                className="text-slate-400 hover:text-white transition-all hover:scale-110 relative group"
+                title={`Volume: ${volume}%`}
+              >
+                <Volume2 size={22} />
+                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-slate-800 px-2 py-1 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  {volume}%
                 </div>
               </button>
             </div>
@@ -194,10 +218,11 @@ export default function Player({ playlist, autoplay }) {
                   min="0" 
                   max="100" 
                   value={volume}
-                  onChange={(e) => setVolume(Number(e.target.value))}
-                  className="flex-1 h-1 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-500"
+                  onChange={handleVolumeChange}
+                  className="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-500 hover:accent-teal-400"
+                  title="Adjust volume"
                 />
-                <span className="text-xs text-slate-400 w-8">{volume}%</span>
+                <span className="text-xs text-slate-400 w-8 text-right">{volume}%</span>
               </div>
             </div>
 
@@ -209,26 +234,27 @@ export default function Player({ playlist, autoplay }) {
         )}
       </div>
       
+      {/* Playlist Info */}
       <div className="p-6 md:p-8 bg-slate-50 border-t border-slate-100">
-         <h2 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600">
-           {playlist.name}
-         </h2>
-         <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-slate-200 shadow-sm">
-           <span className="text-xs font-semibold text-slate-500 tracking-wider">MOOD-ENERGY MATCH:</span>
-           <span className="text-sm font-bold text-teal-700 uppercase">{playlist.mood}</span>
-         </div>
-         {playlist.reason && (
-           <p className="mt-4 text-slate-600 leading-relaxed max-w-3xl bg-white p-4 rounded-xl border border-teal-100">
-             <span className="info-icon mr-2">🧠</span> 
-             <span className="font-semibold text-teal-800">Adaptive Recommendation Engine:</span>
-             <br/>
-             <span className="text-sm mt-2 block">{playlist.reason}</span>
-             <br />
-             <span className="text-xs text-slate-400 mt-2 block font-medium">
-                Acoustic Features: Energy {(playlist.energy * 100).toFixed(0)}% | Valence {(playlist.valence * 100).toFixed(0)}% | Tempo {playlist.tempo} BPM
-             </span>
-           </p>
-         )}
+        <h2 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600">
+          {playlist.name}
+        </h2>
+        <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-slate-200 shadow-sm">
+          <span className="text-xs font-semibold text-slate-500 tracking-wider">MOOD-ENERGY MATCH:</span>
+          <span className="text-sm font-bold text-teal-700 uppercase">{playlist.mood}</span>
+        </div>
+        {playlist.reason && (
+          <p className="mt-4 text-slate-600 leading-relaxed max-w-3xl bg-white p-4 rounded-xl border border-teal-100">
+            <span className="info-icon mr-2">🧠</span> 
+            <span className="font-semibold text-teal-800">Adaptive Recommendation Engine:</span>
+            <br/>
+            <span className="text-sm mt-2 block">{playlist.reason}</span>
+            <br />
+            <span className="text-xs text-slate-400 mt-2 block font-medium">
+              Acoustic Features: Energy {(playlist.energy * 100).toFixed(0)}% | Valence {(playlist.valence * 100).toFixed(0)}% | Tempo {playlist.tempo} BPM
+            </span>
+          </p>
+        )}
       </div>
     </motion.div>
   );
