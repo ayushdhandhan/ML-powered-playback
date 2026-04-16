@@ -16,11 +16,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className="h-20 w-full flex items-center justify-between px-6 md:px-10 border-b border-slate-800/50 bg-slate-900/20 backdrop-blur-md">
+    <header className="h-20 w-full flex items-center justify-between px-6 md:px-10 border-b border-slate-200 bg-white/40 backdrop-blur-md">
       <div className="flex-1 flex items-center gap-3">
-        <Music size={32} className="text-purple-400" />
+        <Music size={32} className="text-teal-600" />
         <h2 
-          className="text-3xl md:text-4xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400"
+          className="text-3xl md:text-4xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600"
           style={{ fontFamily: "'Bauhaus 93', impact, sans-serif" }}
         >
           Music Reco
@@ -30,12 +30,12 @@ export default function Navbar() {
       <div className="flex items-center gap-4">
         {user ? (
           <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-800 border border-slate-700">
-              <User size={20} className="text-slate-300" />
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 border border-slate-200">
+              <User size={20} className="text-slate-600" />
             </div>
             <button 
               onClick={handleLogout}
-              className="text-slate-400 hover:text-white transition-colors"
+              className="text-slate-500 hover:text-slate-800 transition-colors"
               title="Logout"
             >
               <LogOut size={20} />

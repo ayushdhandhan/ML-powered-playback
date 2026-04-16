@@ -16,7 +16,7 @@ export default function Home() {
       const match = getPlaylistFromMood(selectedMood);
       if (match) {
         setPlaylist(match);
-        setTimeout(() => navigate('/player'), 600); // give time for animation
+        setTimeout(() => navigate(`/player?mood=${selectedMood.toLowerCase()}`), 600); // give time for animation
       }
     }
   };
@@ -28,10 +28,10 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-12"
       >
-        <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight text-white drop-shadow-xl">
-          How are you feeling <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500 animate-pulse">today?</span>
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight text-slate-800 drop-shadow-sm">
+          How are you feeling <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500 animate-pulse">today?</span>
         </h1>
-        <p className="text-xl text-slate-300 font-light max-w-2xl mx-auto leading-relaxed">
+        <p className="text-xl text-slate-600 font-light max-w-2xl mx-auto leading-relaxed">
           Select your mood, and our intelligent recommendation engine will curate the perfect soundtrack for your moment using advanced feature matching.
         </p>
       </motion.div>

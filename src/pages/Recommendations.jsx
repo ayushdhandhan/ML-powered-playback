@@ -29,12 +29,12 @@ export default function Recommendations() {
   return (
     <div className="max-w-6xl mx-auto py-8">
       <div className="mb-10 text-center md:text-left">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400">
+        <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-600">
           {hasHistory ? "Your Custom Recommendations" : "All Recommendations"}
         </h1>
-        <p className="text-slate-400 text-lg">
+        <p className="text-slate-600 text-lg">
           {hasHistory 
-            ? "Curated playlists based on your most frequent mood selections." 
+            ? "Curated playlists based on your most frequent mood selections. Recommendations are generated using mood-energy feature mapping and recent listening patterns." 
             : "Browse our full catalog. Select moods to generate custom recommendations!"}
         </p>
       </div>
@@ -54,7 +54,9 @@ export default function Recommendations() {
            }
 
            const clicks = moodHistory[playlist.mood] || 0;
-           const clickReason = hasHistory ? `Selected ${clicks} time${clicks !== 1 ? 's' : ''}. ${reason}` : reason;
+           const clickReason = hasHistory 
+             ? `Recommended because you frequently listen to ${playlist.mood} music. (${clicks} recent interactions)`
+             : reason;
 
            const enhancedPlaylist = { ...playlist, reason: clickReason };
            return <PlaylistCard key={playlist.playlistId} playlist={enhancedPlaylist} />;

@@ -9,6 +9,7 @@ import Favorites from './pages/Favorites';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Analytics from './pages/Analytics';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -16,8 +17,8 @@ const ProtectedRoute = ({ children }) => {
   
   if (loadingApp) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-slate-950">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500"></div>
       </div>
     );
   }
@@ -36,6 +37,7 @@ function AppRoutes() {
         <Route index element={<Home />} />
         <Route path="player" element={<PlayerScreen />} />
         <Route path="recommendations" element={<Recommendations />} />
+        <Route path="analytics" element={<Analytics />} />
         <Route path="favorites" element={<Favorites />} />
         <Route path="settings" element={<Settings />} />
       </Route>

@@ -5,10 +5,10 @@ import Navbar from './Navbar';
 
 export default function MainLayout() {
   return (
-    <div className="flex h-screen w-full bg-slate-950 text-white overflow-hidden relative">
-      <div className="absolute inset-0 pointer-events-none opacity-30 z-0 overflow-hidden">
-         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-600 rounded-full mix-blend-screen filter blur-[120px] animate-pulse"></div>
-         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-600 rounded-full mix-blend-screen filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+    <div className="flex h-screen w-full bg-slate-50 text-slate-800 overflow-hidden relative">
+      <div className="absolute inset-0 pointer-events-none opacity-40 z-0 overflow-hidden">
+         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-teal-200 rounded-full mix-blend-multiply filter blur-[120px] animate-pulse"></div>
+         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-200 rounded-full mix-blend-multiply filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
       <Sidebar className="z-10" />

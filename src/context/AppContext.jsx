@@ -11,7 +11,14 @@ export function AppProvider({ children }) {
   const [playlist, setPlaylist] = useState(null);
 
   const [favorites, setFavorites] = useState([]);
-  const [settings, setSettings] = useState({ autoplay: true, recommendations: true, theme: 'dark' });
+  const [settings, setSettings] = useState(() => {
+    try {
+       const saved = localStorage.getItem('appSettings');
+       return saved ? JSON.parse(saved) : { autoplay: true, recommendations: true, theme: 'light' };
+    } catch {
+       return { autoplay: true, recommendations: true, theme: 'light' };
+    }
+  });
   const [moodHistory, setMoodHistory] = useState({});
 
   // 1. Listen for Supabase Auth changes
@@ -79,9 +86,10 @@ export function AppProvider({ children }) {
   }, [user]);
 
 
-  // Helper: Persist Settings to Supabase
+  // Helper: Persist Settings to Supabase and localStorage
   const updateSettings = async (newSettings) => {
     setSettings(newSettings);
+    localStorage.setItem('appSettings', JSON.stringify(newSettings));
     if (user) {
       await supabase.from('profiles').update({ settings: newSettings }).eq('id', user.id);
     }
@@ -124,7 +132,15 @@ export function AppProvider({ children }) {
     setMoodHistory(newHistory);
 
     if (user) {
+      // Update historical frequency mapping
       await supabase.from('profiles').update({ mood_history: newHistory }).eq('id', user.id);
+      
+      // Store real-time timestamped interaction 
+      await supabase.from('interactions').insert({
+        user_id: user.id,
+        selected_mood: moodName,
+        timestamp: new Date().toISOString()
+      });
     }
   };
 

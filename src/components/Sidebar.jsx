@@ -8,16 +8,17 @@ export default function Sidebar() {
     { name: 'Player', path: '/player', icon: Music },
     { name: 'Recommendations', path: '/recommendations', icon: Filter },
     { name: 'Favorites', path: '/favorites', icon: Heart },
+    { name: 'Analytics', path: '/analytics', icon: LayoutDashboard },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
 
   return (
-    <div className="w-20 md:w-64 bg-slate-900/50 backdrop-blur-xl border-r border-slate-800 flex flex-col pt-6">
+    <div className="w-20 md:w-64 bg-white/50 backdrop-blur-xl border-r border-slate-200 flex flex-col pt-6 z-10 shadow-sm">
       <div className="flex items-center justify-center md:justify-start md:px-6 mb-10">
-        <div className="bg-gradient-to-tr from-purple-500 to-blue-500 p-2 rounded-xl text-white">
+        <div className="bg-gradient-to-tr from-teal-400 to-blue-500 p-2 rounded-xl text-white shadow-md">
           <Music size={24} />
         </div>
-        <span className="ml-3 hidden md:block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+        <span className="ml-3 hidden md:block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600">
           Adaptive
         </span>
       </div>
@@ -32,8 +33,8 @@ export default function Sidebar() {
               className={({ isActive }) =>
                 `flex items-center px-3 py-3 rounded-xl transition-all duration-300 group ${
                   isActive 
-                    ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]'
-                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+                    ? 'bg-teal-50 text-teal-700 border border-teal-200 shadow-sm'
+                    : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
                 }`
               }
             >
